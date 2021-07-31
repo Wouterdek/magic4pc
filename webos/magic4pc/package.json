@@ -1,0 +1,48 @@
+{
+	"name": "magic4pc",
+	"version": "1.0.0",
+	"description": "Control your PC with your TV remote",
+	"author": "",
+	"main": "src/index.js",
+	"scripts": {
+		"serve": "enact serve",
+		"pack": "enact pack",
+		"pack-p": "enact pack -p",
+		"watch": "enact pack --watch",
+		"clean": "enact clean",
+		"lint": "enact lint .",
+		"license": "enact license",
+		"test": "enact test",
+		"test-watch": "enact test --watch"
+	},
+	"license": "MIT",
+	"private": true,
+	"repository": "",
+	"engines": {
+		"npm": ">=6.9.0"
+	},
+	"enact": {
+		"title": "Magic4PC",
+		"theme": "sandstone"
+	},
+	"eslintConfig": {
+		"extends": "enact"
+	},
+	"eslintIgnore": [
+		"node_modules/*",
+		"build/*",
+		"dist/*"
+	],
+	"dependencies": {
+		"@enact/core": "^4.0.0",
+		"@enact/i18n": "^4.0.0",
+		"@enact/sandstone": "^2.0.0-alpha.3",
+		"@enact/spotlight": "^4.0.0",
+		"@enact/ui": "^4.0.0",
+		"@enact/webos": "^4.0.0",
+		"ilib": "npm:ilib-webos@^14.6.2-webos1",
+		"prop-types": "^15.6.2",
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1"
+	}
+}

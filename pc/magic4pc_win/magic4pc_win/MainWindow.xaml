@@ -1,0 +1,20 @@
+﻿<Window
+    xmlns:xaml="clr-namespace:Microsoft.UI.Xaml;assembly=Microsoft.WinUI"
+    x:Class="Magic4PC.Win.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:magic4pc="using:Magic4PC"
+    xmlns:local="using:Magic4PC.Win"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="self"
+    >
+    <Frame x:Name="ContentFrame">
+        <Frame.ContentTransitions>
+            <TransitionCollection>
+                <NavigationThemeTransition  />
+            </TransitionCollection>
+        </Frame.ContentTransitions>
+    </Frame>
+</Window>

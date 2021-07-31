@@ -1,0 +1,55 @@
+﻿<Page
+    x:Class="Magic4PC.Win.RememberedDevicesList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Magic4PC.Win"
+    xmlns:magic4pc="using:Magic4PC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="self"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.Resources>
+            <local:VisibleWhenZeroConverter x:Name="VisibleWhenZeroConverter"/>
+            <local:BoolToCollapsedConverter x:Name="BoolToCollapsedConverter"/>
+            <local:FalseWhenNegativeConverter x:Name="FalseWhenNegativeConverter"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical">
+            <TextBlock Text="Remembered devices" Style="{StaticResource SubtitleTextBlockStyle}" TextLineBounds="TrimToCapHeight" Margin="20,25,0,20"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <ListView x:Name="DeviceList" CanDragItems="False" CanReorderItems="False" AllowDrop="False" SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="magic4pc:DeviceInfo">
+                        <StackPanel Margin="8,6,0,6" AutomationProperties.Name="{Binding Model}">
+                            <TextBlock Text="{Binding Mac}" FontSize="14" FontWeight="SemiBold"
+                                           HorizontalAlignment="Left" LineHeight="20"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <TextBlock Foreground="White" Name="empty" Text="No items found" HorizontalTextAlignment="Center" VerticalAlignment="Center"
+                       Visibility="{Binding HasDevices, ElementName=self, Converter={StaticResource BoolToCollapsedConverter}}"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="15,0,0,10">
+                <Button Margin="0,0,0,0" Click="OnBackClicked">
+                    Back
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,15,10">
+                <Button Click="OnForgetClicked" Margin="14,0,0,0"
+                        IsEnabled="{Binding SelectedIndex, ElementName=DeviceList, Converter={StaticResource FalseWhenNegativeConverter}}">
+                    Forget
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

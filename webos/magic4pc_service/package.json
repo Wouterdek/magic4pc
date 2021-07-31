@@ -1,0 +1,11 @@
+{
+  "name": "me.wouterdek.magic4pc.service",
+  "version": "1.0.0",
+  "description": "Magic4PC service",
+  "main": "m4p_service.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "WouterDeK",
+  "license": "MIT"
+}

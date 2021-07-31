@@ -1,0 +1,13 @@
+{
+	"id": "me.wouterdek.magic4pc",
+	"version": "1.0.0",
+	"vendor": "WouterDeK",
+	"type": "web",
+	"main": "index.html",
+	"title": "Magic4PC",
+	"icon": "icon.png",
+	"miniicon": "icon-mini.png",
+	"largeIcon": "icon-large.png",
+	"uiRevision": 2,
+	"requiredPermissions": [""]
+}

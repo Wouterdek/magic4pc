@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="icon2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="328.98143"
+     inkscape:cy="467.22081"
+     inkscape:window-width="3840"
+     inkscape:window-height="2081"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter26149"
+       x="-0.12332954"
+       y="-0.20424219"
+       width="1.2466591"
+       height="1.4084844">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood26139" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite26141" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="2.5"
+         result="blur"
+         id="feGaussianBlur26143" />
+      <feOffset
+         dx="0"
+         dy="0"
+         result="offset"
+         id="feOffset26145" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite26147" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Blur"
+       id="filter28060"
+       x="-0.10251764"
+       y="-65.019379"
+       width="1.2046705"
+       height="131.03876">
+      <feGaussianBlur
+         stdDeviation="1 1"
+         result="blur"
+         id="feGaussianBlur28058" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#d5d5d5;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:0.00411523"
+       id="rect2885"
+       width="98.689583"
+       height="98.689583"
+       x="32.279167"
+       y="139.7"
+       inkscape:export-filename="C:\Users\Wouter\Desktop\icon2.png"
+       inkscape:export-xdpi="15.442359"
+       inkscape:export-ydpi="15.442359" />
+    <g
+       id="g3212"
+       transform="translate(0,0.66799211)"
+       inkscape:export-filename="C:\Users\Wouter\Desktop\icon2.png"
+       inkscape:export-xdpi="15.442359"
+       inkscape:export-ydpi="15.442359">
+      <rect
+         style="fill:#14417e;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         id="rect8408"
+         width="68.921043"
+         height="41.617168"
+         x="47.163441"
+         y="161.53751" />
+      <path
+         style="fill:none;stroke:#c9d1d8;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter26149)"
+         d="m 116.08448,161.53745 v 41.61724 H 47.163439 v -41.61717 c 22.97368,-1.4e-4 45.947359,-7e-5 68.921041,-7e-5 z"
+         id="path881"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill:none;stroke:#c9d1d8;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 57.162118,215.21616 H 106.0858"
+         id="path2303" />
+      <path
+         style="fill:none;stroke:#e3e3e3;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;fill-opacity:1"
+         d="m 70.784429,171.42302 2.07103,16.70193 4.810163,-4.54293 10.221581,9.68712 4.576325,-4.57633 -9.820725,-9.82074 5.043986,-5.04398 z"
+         id="path2593" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:5.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter28060);opacity:0.43510055"
+         d="M 57.162117,215.21616 H 106.0858 l -45.702934,-0.0774 z"
+         id="path27331" />
+      <path
+         style="fill:#000000;stroke:#c9d1d8;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 106.0858,215.21616 H 57.162118 Z"
+         id="path26199" />
+    </g>
+    <rect
+       style="opacity:1;fill:#14417e;fill-opacity:1;stroke:none;stroke-width:5.265;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect29192"
+       width="68.890366"
+       height="68.890366"
+       x="48.606853"
+       y="55.752422"
+       inkscape:export-filename="C:\Users\Wouter\Documents\Visual Studio 2019\Projects\magic4pc\magic4pc_win\magic4pc_win (Package)\Images\Square44x44Logo.scale-200.png"
+       inkscape:export-xdpi="32.445755"
+       inkscape:export-ydpi="32.445755" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#e3e3e3;stroke-width:5.54135;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 63.030167,70.021476 3.82544,30.850404 8.88494,-8.39132 18.88044,17.89323 8.453003,-8.45301 -18.140013,-18.140044 9.31682,-9.316817 z"
+       id="path2593-3"
+       inkscape:export-filename="C:\Users\Wouter\Documents\Visual Studio 2019\Projects\magic4pc\magic4pc_win\magic4pc_win (Package)\Images\Square44x44Logo.scale-200.png"
+       inkscape:export-xdpi="32.445755"
+       inkscape:export-ydpi="32.445755" />
+  </g>
+</svg>
