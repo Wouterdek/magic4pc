@@ -9,7 +9,7 @@
   <Identity
     Name="2e588304-745a-4167-a30b-85654eaa9544"
     Publisher="CN=WouterDeK"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>Magic4PC</DisplayName>
