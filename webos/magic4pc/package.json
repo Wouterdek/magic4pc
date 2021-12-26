@@ -21,6 +21,9 @@
   "engines": {
     "npm": ">=6.9.0"
   },
+  "browserslist": [
+    "chrome >= 38"
+  ],
   "enact": {
     "title": "Magic4PC",
     "theme": "sandstone"
