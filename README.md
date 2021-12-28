@@ -5,7 +5,7 @@ Allows you to use the magic remote on your webOS LG TV as a mouse for your PC.
 # Installing
 
 You can find the latest release on the [releases page](https://github.com/Wouterdek/magic4pc/releases).
-Download and extract the win_install.zip file, make sure [developer mode is enabled on your PC]() and run the install_x64.bat (or install_arm64.bat) file to install the Windows client app.
+Download and extract the `win_install.zip` file, make sure [developer mode is enabled on your PC](https://docs.microsoft.com/en-us/gaming/game-bar/guide/developer-mode) and run the `install_x64.bat` (or `install_arm64.bat`) file to install the Windows client app.
 
 You will also need the webOS app, which is available as an .ipk file in the release.
 To install the .ipk, first install the [webOS TV SDK](https://webostv.developer.lge.com/sdk/installation/download-installer/) on your PC, enable [developer mode on your TV](https://webostv.developer.lge.com/develop/app-test/using-devmode-app/), and then install the app from the webOS TV CLI using `ares-install --device YOUR_DEVICE_ID_HERE me.wouterdek.magic4pc_1.0.0_all.ipk`. Find your device id with `ares-install --device-list`.
