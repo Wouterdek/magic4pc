@@ -23,13 +23,13 @@ service.call("luna://com.webos.service.tv.systemproperty/getSystemInfo", {
 
 function getMACAddress()
 {
-    let ifaces = os.networkInterfaces();
-    for(let ifaceName of Object.keys(ifaces))
+    var ifaces = os.networkInterfaces();
+    for(var ifaceName of Object.keys(ifaces))
     {
-        if(ifaceName.startsWith("wlan") || ifaceName.startsWith("eth") || ifaceName.startsWith("Ethernet"))
+        if(ifaceName.indexOf("wlan") === 0 || ifaceName.indexOf("eth") === 0 || ifaceName.indexOf("Ethernet") === 0)
         {
-            let iface = ifaces[ifaceName];
-            for(let ifaceProps of iface)
+            var iface = ifaces[ifaceName];
+            for(var ifaceProps of iface)
             {
                 if("mac" in ifaceProps && ifaceProps.mac != "00:00:00:00:00:00")
                 {
@@ -53,7 +53,7 @@ function startUnicastingData(client, rinfo, request)
     unicastRInfo = rinfo;
 
     // Settings
-    let settings = {};
+    var settings = {};
     
     if("updateFreq" in request) settings.updateFrequency = request.updateFreq;
     else settings.updateFrequency = 33;
@@ -68,7 +68,7 @@ function startUnicastingData(client, rinfo, request)
         "quaternion"
     ];
     
-    let clientKeepaliveTs = Date.now();
+    var clientKeepaliveTs = Date.now();
     client.on("message", function(msgBuf, rinfoKl){
         if(rinfo.address === rinfoKl.address && rinfo.port === rinfoKl.port)
         {
@@ -78,15 +78,15 @@ function startUnicastingData(client, rinfo, request)
     });
 
     
-    let serviceKeepaliveTs = Date.now();
-    let sendKeepalive = function()
+    var serviceKeepaliveTs = Date.now();
+    var sendKeepalive = function()
     {
-        let msg = JSON.stringify({t:"keepalive"});
+        var msg = JSON.stringify({t:"keepalive"});
         client.send(msg, 0, msg.length, rinfo.port, rinfo.address);
         serviceKeepaliveTs = Date.now();
     }
     sendKeepalive();
-    let ival = setInterval(function(){ 
+    var ival = setInterval(function(){ 
         if(!unicastDataActive)
         {
             clearInterval(ival);
@@ -98,7 +98,7 @@ function startUnicastingData(client, rinfo, request)
             //TODO: enable keepalive
             unicastDataActive = false;
 
-            let waitTimer = setInterval(function(){
+            var waitTimer = setInterval(function(){
                 if(client == null)
                 {
                     clearInterval(waitTimer);
@@ -111,17 +111,17 @@ function startUnicastingData(client, rinfo, request)
         }
     }, 1000);
 
-    let options = {};
+    var options = {};
     options.callbackInterval = 1;
     options.subscribe = true;
     options.sleep = true;
     options.autoAlign = false;
     
-    let lastUpdateTs = Date.now();
+    var lastUpdateTs = Date.now();
 
-    let setupSensorSubscription = function()
+    var setupSensorSubscription = function()
     {
-        let subscriptionHandle = service.subscribe("luna://com.webos.service.mrcu/sensor/getSensorData", options);
+        var subscriptionHandle = service.subscribe("luna://com.webos.service.mrcu/sensor/getSensorData", options);
         subscriptionHandle.on("response", function (inResponse) {
             if(!unicastDataActive)
             {
@@ -135,19 +135,20 @@ function startUnicastingData(client, rinfo, request)
                 return true;
             }
     
-            let payloadData = "";
+            var payloadData = "";
             try{
                 payloadData = buildUpdatePayload(inResponse.payload, settings).toString("base64");
             }catch(ex){
                 log += "buildUpdatePayload failed"
+              console.info('Payload build failed:', ex);
                 return true;
             }
     
-            let msg = {
+            var msg = {
                 t: "remote_update",
                 payload: payloadData
             };
-            let msgStr = JSON.stringify(msg);
+            var msgStr = JSON.stringify(msg);
             client.send(msgStr, 0, msgStr.length, rinfo.port, rinfo.address);
             lastUpdateTs = Date.now();
             return true;
@@ -165,7 +166,7 @@ function startUnicastingData(client, rinfo, request)
 
 function onInput(parameters)
 {
-    let msg = JSON.stringify({
+    var msg = JSON.stringify({
         t:"input",
         parameters: parameters
     });
@@ -174,8 +175,8 @@ function onInput(parameters)
 
 function buildUpdatePayload(data, settings)
 {
-    let size = 0;
-    for(let entry of settings.filter)
+    var size = 0;
+    for(var entry of settings.filter)
     {
         switch(entry)
         {
@@ -188,9 +189,9 @@ function buildUpdatePayload(data, settings)
         }
     }
 
-    let buffer = Buffer.alloc(size);
-    let offset = 0;
-    for(let entry of settings.filter)
+    var buffer = new Buffer(size);
+    var offset = 0;
+    for(var entry of settings.filter)
     {
         switch(entry)
         {
@@ -228,10 +229,10 @@ function startBroadcastingAdvertisement()
 {
     broadcastAdsActive = true;
 
-    let subscriptionClient = dgram.createSocket('udp4');
-    let subscribeMsgHandler = function(msgBuf, rinfo){
+    var subscriptionClient = dgram.createSocket('udp4');
+    var subscribeMsgHandler = function(msgBuf, rinfo){
         try{
-            let msg = JSON.parse(msgBuf.toString('utf8'));
+            var msg = JSON.parse(msgBuf.toString('utf8'));
             if("t" in msg && msg.t == "sub_sensor")
             {
                 //todo: parse msg [Buffer] (pkt id, any config options)
@@ -245,16 +246,16 @@ function startBroadcastingAdvertisement()
 
     subscriptionClient.bind(subscriptionPort, undefined, function()
     {
-        let broadcastClient = dgram.createSocket('udp4');
+        var broadcastClient = dgram.createSocket('udp4');
         broadcastClient.bind(broadcastPort, undefined, function() 
         {
             broadcastClient.setBroadcast(true);
     
-            let ival = setInterval(function()
+            var ival = setInterval(function()
             {
                 if(broadcastAdsActive)
                 {
-                    let msg = JSON.stringify({
+                    var msg = JSON.stringify({
                         t:"magic4pc_ad",
                         version: 1,
                         model: modelName,
