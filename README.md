@@ -4,11 +4,12 @@ Allows you to use the magic remote on your webOS LG TV as a mouse for your PC.
 
 # Installing
 
+This project consists of two applications, one for on your tv and one for on your pc.
 You can find the latest release on the [releases page](https://github.com/Wouterdek/magic4pc/releases).
 Download and extract the `win_install.zip` file, make sure [developer mode is enabled on your PC](https://docs.microsoft.com/en-us/gaming/game-bar/guide/developer-mode) and run the `install_x64.bat` (or `install_arm64.bat`) file to install the Windows client app.
 
 You will also need the webOS app, which is available as an .ipk file in the release.
-To install the .ipk, first install the [webOS TV SDK](https://webostv.developer.lge.com/sdk/installation/download-installer/) on your PC, enable [developer mode on your TV](https://webostv.developer.lge.com/develop/app-test/using-devmode-app/), and then install the app from the webOS TV CLI using `ares-install --device YOUR_DEVICE_ID_HERE me.wouterdek.magic4pc_1.0.0_all.ipk`. Find your device id with `ares-install --device-list`.
+To install the .ipk, first install the [webOS TV SDK](https://webostv.developer.lge.com/sdk/installation/download-installer/) on your PC, make sure your TV is [rooted](rootmy.tv) (and ready for ssh: see [here](https://webostv.developer.lge.com/develop/app-test/using-devmode-app#connectingTVandPC) and [here](https://github.com/webosbrew/webos-homebrew-channel/blob/main/README.md#development-tv-setup)) or you have enabled [developer mode](https://webostv.developer.lge.com/develop/app-test/using-devmode-app/), and then install the app from the webOS TV CLI using `ares-install --device YOUR_DEVICE_ID_HERE me.wouterdek.magic4pc_1.0.0_all.ipk`. Find your device id with `ares-install --device-list`.
 
 # Usage
 
@@ -18,4 +19,8 @@ If the cursor is on the wrong screen, select the correct one in the PC app setti
 
 # Building from source
 
-Requires Visual Studio 2019 with WinUI 3.0, Node.js, Enact and the LG webOS CLI development tools
+## The WebOS IPK
+Install Node.js v14.15.1, run `npm install` in `/webos/magic4pc/`, and then run `npm run pack` in `/webos/`.
+
+## The Windows app
+Install Visual Studio 2019 or later with WinUI 3.0 (and WindowsAppSDK), open up `/pc/magic4pc.sln` and publish the app with sideloading enabled.
