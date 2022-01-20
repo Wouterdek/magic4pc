@@ -6,13 +6,14 @@
   "main": "src/index.js",
   "scripts": {
     "serve": "node ./scripts/serve.js",
-    "pack": "node ./scripts/pack.js",
-    "pack-p": "node ./scripts/pack.js -p",
+    "build": "node ./scripts/pack.js",
+    "build-p": "node ./scripts/pack.js -p",
     "watch": "node ./scripts/pack.js --watch",
     "clean": "node ./scripts/clean.js",
     "lint": "node ./scripts/lint.js .",
     "license": "node ./scripts/license.js",
     "test": "node ./scripts/test.js",
+    "package": "ares-package -n dist/ service/",
     "test-watch": "node ./scripts/test.js --watch"
   },
   "license": "MIT",
