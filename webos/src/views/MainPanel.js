@@ -19,7 +19,7 @@ class MainPanel extends React.Component {
 		this.queryServiceStatus = this.queryServiceStatus.bind(this);
 		this.updateLog = this.updateLog.bind(this);
 		this.onVisibilityChange = this.onVisibilityChange.bind(this);
-		this.componentWillMount = this.componentWillMount.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
 		this.componentWillUnmount = this.componentWillUnmount.bind(this);
 		this.onInputSourceSelected = this.onInputSourceSelected.bind(this);
 		this.handleOpenPopup = this.handleOpenPopup.bind(this);
@@ -161,12 +161,13 @@ class MainPanel extends React.Component {
 		this.setState({settingsButtonVisible: isVisible});
 	}
 
-	componentWillMount()
+	componentDidMount()
 	{
 		document.addEventListener("keydown", this.onButtonDown, false);
 		document.addEventListener("keyup", this.onButtonUp, false);
 		document.addEventListener('visibilitychange', this.onVisibilityChange, false);
 		document.addEventListener('cursorStateChange', this.onCursorVisibilityChange, false);
+		this.loadSettings();
 	}
 
 	componentWillUnmount()
@@ -200,9 +201,11 @@ class MainPanel extends React.Component {
 	onInputSourceSelected({selected})
 	{
 		let selectedSource = this.inputSources[selected];
-		
+		console.info('Switching sources to:', selectedSource, selected);
 		this.setState({
 			videoSource: selectedSource
+		}, () => {
+			this.saveSettings();
 		});
 
 		let vidElem = document.getElementById("vidElem");
@@ -212,6 +215,31 @@ class MainPanel extends React.Component {
 		vidSrcElem.src = selectedSource;
 		vidElem.load();
 		vidElem.play();
+	}
+
+	saveSettings()
+	{
+		window.localStorage.magic4pcSettings = JSON.stringify({
+			videoSource: this.state.videoSource,
+		});
+	}
+
+	loadSettings()
+	{
+		let savedSettings;
+		try {
+			savedSettings = JSON.parse(window.localStorage.magic4pcSettings);
+		} catch (err) {
+			console.warn('Unable to parse:', err);
+		}
+
+		let settings = {
+			videoSource: this.inputSources[0],
+			...savedSettings,
+		};
+		console.info('Settings:', settings);
+
+		this.onInputSourceSelected({ selected: this.inputSources.indexOf(settings.videoSource) });
 	}
 
 	overlayStyle = {
