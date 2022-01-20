@@ -6,6 +6,7 @@
 	"main": "index.html",
 	"title": "Magic4PC",
 	"icon": "icon.png",
+	"iconColor": "#074259",
 	"miniicon": "icon-mini.png",
 	"largeIcon": "icon-large.png",
 	"uiRevision": 2,
