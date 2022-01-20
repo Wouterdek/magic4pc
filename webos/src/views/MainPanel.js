@@ -250,7 +250,7 @@ class MainPanel extends React.Component {
 						<p id="status">{this.state.label}</p>
 					</div>
 					<div>
-						<Dropdown defaultSelected={0} title="Input source" onSelect={this.onInputSourceSelected}>{this.inputSourceLabels}</Dropdown>
+						<Dropdown defaultSelected={this.inputSources.indexOf(this.state.videoSource)} title="Input source" onSelect={this.onInputSourceSelected}>{this.inputSourceLabels}</Dropdown>
 						<Button onClick={this.startService}>Enable</Button>
 						<Button onClick={this.stopService}>Disable</Button>
 						<Button onClick={this.updateLog}>Update</Button>
