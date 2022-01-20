@@ -9,5 +9,6 @@
 	"miniicon": "icon-mini.png",
 	"largeIcon": "icon-large.png",
 	"uiRevision": 2,
+	"disableBackHistoryAPI": true,
 	"requiredPermissions": [""]
 }
