@@ -10,5 +10,6 @@
 	"largeIcon": "icon-large.png",
 	"uiRevision": 2,
 	"disableBackHistoryAPI": true,
+	"supportGIP": true,
 	"requiredPermissions": [""]
 }
