@@ -1,10 +1,13 @@
 import Button from '@enact/sandstone/Button';
 import {Dropdown, DropdownDecorator} from '@enact/sandstone/Dropdown';
+import {SwitchItem} from '@enact/sandstone/SwitchItem';
 import Popup from '@enact/sandstone/Popup';
 import kind from '@enact/core/kind';
 import {Panel, Header} from '@enact/sandstone/Panels';
 import LS2Request from '@enact/webos/LS2Request';
 import React from 'react'
+
+const appId = 'me.wouterdek.magic4pc';
 
 class MainPanel extends React.Component {
 	constructor(props)
@@ -16,10 +19,11 @@ class MainPanel extends React.Component {
 		this.onButtonDown = this.onButtonDown.bind(this);
 		this.onButtonUp = this.onButtonUp.bind(this);
 		this.stopService = this.stopService.bind(this);
+		this.autostartToggle = this.autostartToggle.bind(this);
 		this.queryServiceStatus = this.queryServiceStatus.bind(this);
 		this.updateLog = this.updateLog.bind(this);
 		this.onVisibilityChange = this.onVisibilityChange.bind(this);
-		this.componentWillMount = this.componentWillMount.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
 		this.componentWillUnmount = this.componentWillUnmount.bind(this);
 		this.onInputSourceSelected = this.onInputSourceSelected.bind(this);
 		this.handleOpenPopup = this.handleOpenPopup.bind(this);
@@ -30,7 +34,8 @@ class MainPanel extends React.Component {
 			label: "",
 			videoSource: "ext://hdmi:1",
 			popupOpen: false,
-			settingsButtonVisible: true
+			settingsButtonVisible: true,
+			autostartEnabled: false,
 		};
 	}
 
@@ -161,12 +166,61 @@ class MainPanel extends React.Component {
 		this.setState({settingsButtonVisible: isVisible});
 	}
 
-	componentWillMount()
+	componentDidMount()
 	{
 		document.addEventListener("keydown", this.onButtonDown, false);
 		document.addEventListener("keyup", this.onButtonUp, false);
 		document.addEventListener('visibilitychange', this.onVisibilityChange, false);
 		document.addEventListener('cursorStateChange', this.onCursorVisibilityChange, false);
+		this.loadSettings();
+
+		new LS2Request().send({
+			service: 'luna://com.webos.service.eim/',
+			method: 'getAllInputStatus',
+			onSuccess: (resp) => {
+				const autostartEnabled = resp.devices.map(dev => dev.appId).indexOf(appId) !== -1;
+				this.setState({
+					autostartEnabled,
+				});
+			},
+		});
+	}
+
+	autostartToggle(evt) {
+		console.info('autostart toggle:', evt);
+		if (evt.selected) {
+			new LS2Request().send({
+				service: 'luna://com.webos.service.eim/',
+				method: 'addDevice',
+				parameters: {
+					appId,
+					pigImage: '',
+					mvpdIcon: '',
+					showPopup: true,
+					label: 'Magic4PC',
+				},
+				onSuccess: (resp) => {
+					this.setState({ autostartEnabled: evt.selected });
+				},
+				onFailure: (err) => {
+					console.warn(err);
+				},
+			});
+		} else {
+			new LS2Request().send({
+				service: 'luna://com.webos.service.eim/',
+				method: 'deleteDevice',
+				parameters: {
+					appId,
+				},
+				onSuccess: (resp) => {
+					this.setState({ autostartEnabled: evt.selected });
+				},
+				onFailure: (err) => {
+					console.warn(err);
+				},
+			});
+		}
 	}
 
 	componentWillUnmount()
@@ -200,9 +254,11 @@ class MainPanel extends React.Component {
 	onInputSourceSelected({selected})
 	{
 		let selectedSource = this.inputSources[selected];
-		
+		console.info('Switching sources to:', selectedSource, selected);
 		this.setState({
 			videoSource: selectedSource
+		}, () => {
+			this.saveSettings();
 		});
 
 		let vidElem = document.getElementById("vidElem");
@@ -212,6 +268,31 @@ class MainPanel extends React.Component {
 		vidSrcElem.src = selectedSource;
 		vidElem.load();
 		vidElem.play();
+	}
+
+	saveSettings()
+	{
+		window.localStorage.magic4pcSettings = JSON.stringify({
+			videoSource: this.state.videoSource,
+		});
+	}
+
+	loadSettings()
+	{
+		let savedSettings;
+		try {
+			savedSettings = JSON.parse(window.localStorage.magic4pcSettings);
+		} catch (err) {
+			console.warn('Unable to parse:', err);
+		}
+
+		let settings = {
+			videoSource: this.inputSources[0],
+			...savedSettings,
+		};
+		console.info('Settings:', settings);
+
+		this.onInputSourceSelected({ selected: this.inputSources.indexOf(settings.videoSource) });
 	}
 
 	overlayStyle = {
@@ -250,11 +331,12 @@ class MainPanel extends React.Component {
 						<p id="status">{this.state.label}</p>
 					</div>
 					<div>
-						<Dropdown defaultSelected={0} title="Input source" onSelect={this.onInputSourceSelected}>{this.inputSourceLabels}</Dropdown>
-						<Button onClick={this.startService}>Enable</Button>
-						<Button onClick={this.stopService}>Disable</Button>
-						<Button onClick={this.updateLog}>Update</Button>
-						<Button onClick={this.handleClosePopup}>Close</Button>
+						<Dropdown defaultSelected={this.inputSources.indexOf(this.state.videoSource)} title="Input source" onSelect={this.onInputSourceSelected}>{this.inputSourceLabels}</Dropdown>
+						<Button onClick={this.startService} size="small">Enable</Button>
+						<Button onClick={this.stopService} size="small">Disable</Button>
+						<div style={{ width: '12em', display: 'inline-block' }}>
+							<SwitchItem selected={this.state.autostartEnabled} onToggle={this.autostartToggle}>Autostart</SwitchItem>
+						</div>
 					</div>
 				</Popup>
 			</div>

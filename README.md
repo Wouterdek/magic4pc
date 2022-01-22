@@ -20,7 +20,11 @@ If the cursor is on the wrong screen, select the correct one in the PC app setti
 # Building from source
 
 ## The WebOS IPK
-Install Node.js v14.15.1, run `npm install` in `/webos/magic4pc/`, and then run `npm run pack` in `/webos/`.
+* Install Node.js v14.15.1
+* Go to `webos/` directory
+* Run `npm install` to install dependencies
+* Run `npm run build` to build the application
+* Run `npm run package` to create ipk (application package)
 
 ## The Windows app
 Install Visual Studio 2019 or later with WinUI 3.0 (and WindowsAppSDK), open up `/pc/magic4pc.sln` and publish the app with sideloading enabled.
