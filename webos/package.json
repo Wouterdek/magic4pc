@@ -14,7 +14,8 @@
     "license": "node ./scripts/license.js",
     "test": "node ./scripts/test.js",
     "package": "ares-package -n dist/ service/",
-    "test-watch": "node ./scripts/test.js --watch"
+    "test-watch": "node ./scripts/test.js --watch",
+    "manifest": "node ./scripts/gen-manifest.js me.wouterdek.magic4pc.manifest.json"
   },
   "license": "MIT",
   "private": true,

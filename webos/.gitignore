@@ -13,3 +13,7 @@ dist
 # misc
 .DS_Store
 npm-debug.log
+
+.eslintcache
+*.ipk
+*.manifest.json
