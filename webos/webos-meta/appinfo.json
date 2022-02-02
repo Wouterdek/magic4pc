@@ -13,5 +13,7 @@
 	"uiRevision": 2,
 	"disableBackHistoryAPI": true,
 	"supportGIP": true,
-	"requiredPermissions": [""]
+	"requiredPermissions": [
+		""
+	]
 }
