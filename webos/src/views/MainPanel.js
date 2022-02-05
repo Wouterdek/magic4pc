@@ -1,9 +1,9 @@
+/* eslint-disable no-unused-vars */
+
 import Button from '@enact/sandstone/Button';
-import {Dropdown, DropdownDecorator} from '@enact/sandstone/Dropdown';
+import {Dropdown} from '@enact/sandstone/Dropdown';
 import {SwitchItem} from '@enact/sandstone/SwitchItem';
 import Popup from '@enact/sandstone/Popup';
-import kind from '@enact/core/kind';
-import {Panel, Header} from '@enact/sandstone/Panels';
 import LS2Request from '@enact/webos/LS2Request';
 import React from 'react'
 
@@ -162,7 +162,7 @@ class MainPanel extends React.Component {
 
 	onCursorVisibilityChange(e)
 	{
-		var isVisible = e.detail.visibility;
+		let isVisible = e.detail.visibility;
 		this.setState({settingsButtonVisible: isVisible});
 	}
 
@@ -240,7 +240,7 @@ class MainPanel extends React.Component {
 		'AV 1',
 		'AV 2',
 	]
-	
+
 	inputSources = [
 		'ext://hdmi:1',
 		'ext://hdmi:2',
@@ -305,7 +305,7 @@ class MainPanel extends React.Component {
 		bottom: 0,
 		zIndex: 2
 	}
-	
+
 	handleOpenPopup()
 	{
 		this.setState({popupOpen: true});
