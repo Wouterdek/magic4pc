@@ -37,28 +37,30 @@ function api({paths = [], all = false} = {}) {
 	if (fs.existsSync(samples)) {
 		const sampleDirs = fs
 			.readdirSync(samples)
-			.map(p => path.join(samples, p))
-			.filter(p => fs.existsSync(path.join(p, 'package.json')));
-		sampleDirs.forEach(p => {
+			.map((p) => path.join(samples, p))
+			.filter((p) => fs.existsSync(path.join(p, 'package.json')));
+		sampleDirs.forEach((p) => {
 			known.push(path.join(p, build), path.join(p, dist));
 			if (all) known.push(path.join(p, node_modules));
 		});
 	}
 	if (fs.existsSync(ssTests)) known.push(path.join(ssTests, dist));
 	if (fs.existsSync(uiTests)) known.push(path.join(uiTests, dist));
-	return Promise.all(paths.concat(known).map(d => fs.remove(d)));
+	return Promise.all(paths.concat(known).map((d) => fs.remove(d)));
 }
 
 function cli(args) {
 	const opts = minimist(args, {
 		boolean: ['help', 'all'],
-		alias: {h: 'help', a: 'all'}
+		alias: {h: 'help', a: 'all'},
 	});
 	if (opts.help) displayHelp();
 
 	process.chdir(packageRoot().path);
-	api({paths: opts._, all: opts.all}).catch(err => {
-		console.error(chalk.red('ERROR: ') + 'Failed to clean project.\n' + err.message);
+	api({paths: opts._, all: opts.all}).catch((err) => {
+		console.error(
+			chalk.red('ERROR: ') + 'Failed to clean project.\n' + err.message
+		);
 		process.exit(1);
 	});
 }

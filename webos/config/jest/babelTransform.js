@@ -16,8 +16,8 @@ module.exports = babelJest.createTransformer({
 	extends: path.join(__dirname, '..', 'babel.config.js'),
 	plugins: [
 		require.resolve('@babel/plugin-transform-modules-commonjs'),
-		require.resolve('babel-plugin-dynamic-import-node')
+		require.resolve('babel-plugin-dynamic-import-node'),
 	],
 	babelrc: false,
-	configFile: false
+	configFile: false,
 });

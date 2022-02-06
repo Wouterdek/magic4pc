@@ -1,9 +1,9 @@
 {
-  "id": "me.wouterdek.magic4pc.service",
-  "description": "Magic4PC Service",
-  "services": [
-    {
-      "name": "me.wouterdek.magic4pc.service"
-    }
-  ]
+	"id": "me.wouterdek.magic4pc.service",
+	"description": "Magic4PC Service",
+	"services": [
+		{
+			"name": "me.wouterdek.magic4pc.service"
+		}
+	]
 }

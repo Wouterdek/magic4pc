@@ -5,8 +5,14 @@ const glob = require('glob');
 const minimist = require('minimist');
 
 const globOpts = {
-	ignore: ['**/node_modules/**', 'build/**', '**/dist/**', 'coverage/**', 'tests/**'],
-	nodir: true
+	ignore: [
+		'**/node_modules/**',
+		'build/**',
+		'**/dist/**',
+		'coverage/**',
+		'tests/**',
+	],
+	nodir: true,
 };
 
 function displayHelp() {
@@ -34,12 +40,25 @@ function shouldESLint() {
 	return glob.sync('**/*.+(js|jsx|ts|tsx)', globOpts).length > 0;
 }
 
-function eslint({strict = false, local = false, fix = false, eslintArgs = []} = {}) {
+function eslint({
+	strict = false,
+	local = false,
+	fix = false,
+	eslintArgs = [],
+} = {}) {
 	let args = [];
 	if (strict) {
-		args.push('--no-eslintrc', '--config', require.resolve('eslint-config-enact/strict'));
+		args.push(
+			'--no-eslintrc',
+			'--config',
+			require.resolve('eslint-config-enact/strict')
+		);
 	} else if (!local) {
-		args.push('--no-eslintrc', '--config', require.resolve('eslint-config-enact'));
+		args.push(
+			'--no-eslintrc',
+			'--config',
+			require.resolve('eslint-config-enact')
+		);
 	}
 	if (local) {
 		args.push('--ignore-pattern', '**/node_modules/*');
@@ -56,7 +75,7 @@ function eslint({strict = false, local = false, fix = false, eslintArgs = []} = 
 	return new Promise((resolve, reject) => {
 		const opts = {env: process.env, cwd: process.cwd()};
 		const child = cp.fork(require.resolve('eslint/bin/eslint'), args, opts);
-		child.on('close', code => {
+		child.on('close', (code) => {
 			if (code !== 0) {
 				reject();
 			} else {
@@ -73,11 +92,16 @@ function api(opts) {
 function cli(args) {
 	const opts = minimist(args, {
 		boolean: ['local', 'strict', 'fix', 'help'],
-		alias: {l: 'local', s: 'strict', framework: 'strict', f: 'fix', h: 'help'}
+		alias: {l: 'local', s: 'strict', framework: 'strict', f: 'fix', h: 'help'},
 	});
 	if (opts.help) displayHelp();
 
-	api({strict: opts.strict, local: opts.local, fix: opts.fix, eslintArgs: opts._}).catch(() => {
+	api({
+		strict: opts.strict,
+		local: opts.local,
+		fix: opts.fix,
+		eslintArgs: opts._,
+	}).catch(() => {
 		process.exit(1);
 	});
 }

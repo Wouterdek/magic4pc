@@ -46,12 +46,12 @@ module.exports = function (api) {
 						'web.timers',
 						'web.url',
 						'web.url.to-json',
-						'web.url-search-params'
+						'web.url-search-params',
 					],
 					forceAllTransforms: es5Standalone,
 					useBuiltIns: 'entry',
-					corejs: 3
-				}
+					corejs: 3,
+				},
 			],
 			[
 				require('@babel/preset-react').default,
@@ -61,10 +61,10 @@ module.exports = function (api) {
 					development: env !== 'production' && !es5Standalone,
 					// Will use the native built-in instead of trying to polyfill
 					// behavior for any plugins that require one.
-					...(!hasJsxRuntime ? {useBuiltIns: true} : {runtime: 'automatic'})
-				}
+					...(!hasJsxRuntime ? {useBuiltIns: true} : {runtime: 'automatic'}),
+				},
 			],
-			['@babel/preset-typescript']
+			['@babel/preset-typescript'],
 		],
 		plugins: [
 			// Stage 0
@@ -85,7 +85,10 @@ module.exports = function (api) {
 
 			// Stage 3
 			require('@babel/plugin-syntax-dynamic-import').default,
-			[require('@babel/plugin-proposal-class-properties').default, {loose: true}],
+			[
+				require('@babel/plugin-proposal-class-properties').default,
+				{loose: true},
+			],
 			// '@babel/plugin-syntax-import-meta',
 			// '@babel/plugin-proposal-json-strings'
 
@@ -103,23 +106,32 @@ module.exports = function (api) {
 					version: require('@babel/runtime/package.json').version,
 					regenerator: false,
 					useESModules: !es5Standalone,
-				}
+				},
 			],
 
 			require('babel-plugin-dev-expression'),
-			env === 'test' && !es5Standalone && require('babel-plugin-dynamic-import-node').default,
-			env === 'production' && !es5Standalone && require('@babel/plugin-transform-react-inline-elements').default,
+			env === 'test' &&
+				!es5Standalone &&
+				require('babel-plugin-dynamic-import-node').default,
+			env === 'production' &&
+				!es5Standalone &&
+				require('@babel/plugin-transform-react-inline-elements').default,
 			env === 'production' &&
 				!es5Standalone && [
 					require('babel-plugin-transform-react-remove-prop-types').default,
-					{removeImport: true}
-				]
+					{removeImport: true},
+				],
 		].filter(Boolean),
 		overrides: [
 			{
 				test: /\.tsx?$/,
-				plugins: [[require('@babel/plugin-proposal-decorators').default, {legacy: true}]]
-			}
-		]
+				plugins: [
+					[
+						require('@babel/plugin-proposal-decorators').default,
+						{legacy: true},
+					],
+				],
+			},
+		],
 	};
 };

@@ -8,7 +8,11 @@ const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printBuildError = require('react-dev-utils/printBuildError');
 const stripAnsi = require('strip-ansi');
 const webpack = require('webpack');
-const {optionParser: app, mixins, configHelper: helper} = require('@enact/dev-utils');
+const {
+	optionParser: app,
+	mixins,
+	configHelper: helper,
+} = require('@enact/dev-utils');
 
 function displayHelp() {
 	let e = 'node ' + path.relative(process.cwd(), __filename);
@@ -33,7 +37,9 @@ function displayHelp() {
 	console.log('            "all" - All locales that iLib supports');
 	console.log('    -s, --snapshot    Generate V8 snapshot blob');
 	console.log('                      (requires V8_MKSNAPSHOT set)');
-	console.log('    -m, --meta        JSON to override package.json enact metadata');
+	console.log(
+		'    -m, --meta        JSON to override package.json enact metadata'
+	);
 	console.log('    --stats           Output bundle analysis file');
 	console.log('    --verbose         Verbose log build details');
 	console.log('    -v, --version     Display version information');
@@ -60,18 +66,19 @@ function details(err, stats, output) {
 
 		// Add additional information for postcss errors
 		if (Object.prototype.hasOwnProperty.call(err, 'postcssNode')) {
-			msg += '\nCompileError: Begins at CSS selector ' + err['postcssNode'].selector;
+			msg +=
+				'\nCompileError: Begins at CSS selector ' + err['postcssNode'].selector;
 		}
 
 		// Generate pretty/formatted warnins/errors
 		messages = formatWebpackMessages({
 			errors: [msg],
-			warnings: []
+			warnings: [],
 		});
 	} else {
 		// Remove any ESLint fixable notices since we're not running via eslint command
 		// and don't support a `--fix` optiob ourselves; don't want to confuse devs
-		stats.compilation.warnings.forEach(w => {
+		stats.compilation.warnings.forEach((w) => {
 			const eslintFix = /\n.* potentially fixable with the `--fix` option./gm;
 			w.message = w.message.replace(eslintFix, '');
 		});
@@ -122,7 +129,7 @@ function copyPublicFolder(output) {
 	const staticAssets = './public';
 	if (fs.existsSync(staticAssets)) {
 		fs.copySync(staticAssets, output, {
-			dereference: true
+			dereference: true,
 		});
 	}
 }
@@ -131,29 +138,38 @@ function copyPublicFolder(output) {
 function printFileSizes(stats, output) {
 	const assets = stats
 		.toJson({all: false, assets: true})
-		.assets.filter(asset => /\.(js|css|bin)$/.test(asset.name))
-		.map(asset => {
+		.assets.filter((asset) => /\.(js|css|bin)$/.test(asset.name))
+		.map((asset) => {
 			const size = fs.statSync(path.join(output, asset.name)).size;
 			return {
-				folder: path.relative(app.context, path.join(output, path.dirname(asset.name))),
+				folder: path.relative(
+					app.context,
+					path.join(output, path.dirname(asset.name))
+				),
 				name: path.basename(asset.name),
 				size: size,
-				sizeLabel: filesize(size)
+				sizeLabel: filesize(size),
 			};
 		});
 	assets.sort((a, b) => b.size - a.size);
 	const longestSizeLabelLength = Math.max.apply(
 		null,
-		assets.map(a => stripAnsi(a.sizeLabel).length)
+		assets.map((a) => stripAnsi(a.sizeLabel).length)
 	);
-	assets.forEach(asset => {
+	assets.forEach((asset) => {
 		let sizeLabel = asset.sizeLabel;
 		const sizeLength = stripAnsi(sizeLabel).length;
 		if (sizeLength < longestSizeLabelLength) {
 			const rightPadding = ' '.repeat(longestSizeLabelLength - sizeLength);
 			sizeLabel += rightPadding;
 		}
-		console.log('	' + sizeLabel + '	' + chalk.dim(asset.folder + path.sep) + chalk.cyan(asset.name));
+		console.log(
+			'	' +
+				sizeLabel +
+				'	' +
+				chalk.dim(asset.folder + path.sep) +
+				chalk.cyan(asset.name)
+		);
 	});
 }
 
@@ -202,7 +218,9 @@ function watch(config) {
 	if (process.env.NODE_ENV === 'development') {
 		console.log('Creating a development build and watching for changes...');
 	} else {
-		console.log('Creating an optimized production build and watching for changes...');
+		console.log(
+			'Creating an optimized production build and watching for changes...'
+		);
 	}
 	copyPublicFolder(config.output.path);
 	webpack(config).watch({}, (err, stats) => {
@@ -221,14 +239,23 @@ function api(opts = {}) {
 			try {
 				meta = JSON.parse(opts.meta);
 			} catch (e) {
-				throw new Error('Invalid metadata; must be a valid JSON string.\n' + e.message);
+				throw new Error(
+					'Invalid metadata; must be a valid JSON string.\n' + e.message
+				);
 			}
 		}
 		app.applyEnactMeta(meta);
 	}
 
 	if (opts['custom-skin']) {
-		app.applyEnactMeta({template: path.join(__dirname, '..', 'config', 'custom-skin-template.ejs')});
+		app.applyEnactMeta({
+			template: path.join(
+				__dirname,
+				'..',
+				'config',
+				'custom-skin-template.ejs'
+			),
+		});
 	}
 
 	// Do this as the first thing so that any code reading it knows the right env.
@@ -269,9 +296,16 @@ function cli(args) {
 			'snapshot',
 			'verbose',
 			'watch',
-			'help'
+			'help',
 		],
-		string: ['externals', 'externals-public', 'locales', 'entry', 'output', 'meta'],
+		string: [
+			'externals',
+			'externals-public',
+			'locales',
+			'entry',
+			'output',
+			'meta',
+		],
 		default: {minify: true},
 		alias: {
 			o: 'output',
@@ -281,13 +315,13 @@ function cli(args) {
 			s: 'snapshot',
 			m: 'meta',
 			w: 'watch',
-			h: 'help'
-		}
+			h: 'help',
+		},
 	});
 	if (opts.help) displayHelp();
 
 	process.chdir(app.context);
-	api(opts).catch(err => {
+	api(opts).catch((err) => {
 		printErrorDetails(err, () => {
 			process.exit(1);
 		});

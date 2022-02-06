@@ -43,7 +43,11 @@ function logVersion(pkg, rel = __dirname) {
 function gitInfo(dir) {
 	const git = (args = []) => {
 		try {
-			const result = spawn.sync('git', args, {encoding: 'utf8', cwd: dir, env: process.env});
+			const result = spawn.sync('git', args, {
+				encoding: 'utf8',
+				cwd: dir,
+				env: process.env,
+			});
 			if (!result.error && result.status === 0) return result.stdout.trim();
 		} catch (e) {
 			// do nothing
@@ -63,11 +67,18 @@ function globalModules() {
 	try {
 		const result = spawn.sync('npm', ['config', 'get', 'prefix', '-g'], {
 			cwd: process.cwd(),
-			env: process.env
+			env: process.env,
 		});
-		if (result.error || result.status !== 0 || !(result.stdout = result.stdout.trim())) {
+		if (
+			result.error ||
+			result.status !== 0 ||
+			!(result.stdout = result.stdout.trim())
+		) {
 			return require('global-modules');
-		} else if (process.platform === 'win32' || ['msys', 'cygwin'].includes(process.env.OSTYPE)) {
+		} else if (
+			process.platform === 'win32' ||
+			['msys', 'cygwin'].includes(process.env.OSTYPE)
+		) {
 			return path.resolve(result.stdout, 'node_modules');
 		} else {
 			return path.resolve(result.stdout, 'lib/node_modules');
@@ -86,7 +97,8 @@ function api({cliInfo = false, dev = false} = {}) {
 				const gCLI = path.join(gm, '@enact', 'cli');
 				const isGlobal =
 					fs.existsSync(gCLI) &&
-					path.dirname(require.resolve(path.join(gCLI, 'package.json'))) === path.dirname(__dirname);
+					path.dirname(require.resolve(path.join(gCLI, 'package.json'))) ===
+						path.dirname(__dirname);
 				console.log(chalk.yellow.bold('==Enact CLI Info=='));
 				if (isGlobal && fs.lstatSync(gCLI).isSymbolicLink()) {
 					const ver = gitInfo(__dirname) || require('../package.json').version;
@@ -105,8 +117,8 @@ function api({cliInfo = false, dev = false} = {}) {
 					'@enact/dev-utils',
 					'eslint-config-enact',
 					'eslint-plugin-enact',
-					'postcss-resolution-independence'
-				].forEach(dep => logVersion(dep));
+					'postcss-resolution-independence',
+				].forEach((dep) => logVersion(dep));
 				console.log();
 
 				// Display info on notable 3rd party components
@@ -120,8 +132,10 @@ function api({cliInfo = false, dev = false} = {}) {
 				const app = require('@enact/dev-utils').optionParser;
 				const meta = require(path.join(app.context, 'package.json'));
 				const bl = require(resolveSync('browserslist', {
-					basedir: path.dirname(require.resolve('@enact/dev-utils/package.json')),
-					preserveSymlinks: false
+					basedir: path.dirname(
+						require.resolve('@enact/dev-utils/package.json')
+					),
+					preserveSymlinks: false,
 				}));
 				app.setEnactTargetsAsDefault();
 				console.log(chalk.yellow.bold('==Project Info=='));
@@ -131,23 +145,25 @@ function api({cliInfo = false, dev = false} = {}) {
 				console.log(`Theme: ${(app.theme || {}).name}`);
 				if (app.proxer) console.log(`Serve Proxy: ${app.proxy}`);
 				if (app.template) console.log(`Template: ${app.template}`);
-				if (app.externalStartup) console.log(`External Startup: ${app.externalStartup}`);
+				if (app.externalStartup)
+					console.log(`External Startup: ${app.externalStartup}`);
 				if (app.deep) console.log(`Deep: ${app.deep}`);
-				if (app.forceCSSModules) console.log(`Force CSS Modules: ${app.forceCSSModules}`);
+				if (app.forceCSSModules)
+					console.log(`Force CSS Modules: ${app.forceCSSModules}`);
 				console.log(`Resolution Independence: ${JSON.stringify(app.ri)}`);
 				console.log(`Browserslist: ${bl.loadConfig({path: app.context})}`);
 				console.log(`Environment: ${app.environment}`);
 				console.log();
 				console.log(chalk.yellow.bold('==Dependencies=='));
 				if (meta.dependencies) {
-					Object.keys(meta.dependencies).forEach(dep => {
+					Object.keys(meta.dependencies).forEach((dep) => {
 						logVersion(dep, app.context);
 					});
 				}
 				if (dev && meta.devDependencies) {
 					console.log();
 					console.log(chalk.yellow.bold('==Dev Dependencies=='));
-					Object.keys(meta.devDependencies).forEach(dep => {
+					Object.keys(meta.devDependencies).forEach((dep) => {
 						logVersion(dep, app.context);
 					});
 				}
@@ -162,12 +178,14 @@ function api({cliInfo = false, dev = false} = {}) {
 function cli(args) {
 	const opts = minimist(args, {
 		boolean: ['cli', 'help'],
-		alias: {h: 'help'}
+		alias: {h: 'help'},
 	});
 	if (opts.help) displayHelp();
 
-	api({cliInfo: opts.cli, dev: opts.dev}).catch(err => {
-		console.error(chalk.red('ERROR: ') + 'Failed to display info.\n' + err.message);
+	api({cliInfo: opts.cli, dev: opts.dev}).catch((err) => {
+		console.error(
+			chalk.red('ERROR: ') + 'Failed to display info.\n' + err.message
+		);
 		process.exit(1);
 	});
 }

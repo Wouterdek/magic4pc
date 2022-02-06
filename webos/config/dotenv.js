@@ -16,14 +16,14 @@ module.exports = {
 			// `test` environment for test result consistency.
 			mode !== 'test' && `.env.local`,
 			`.env.${mode}`,
-			'.env'
+			'.env',
 		]
 			.filter(Boolean)
-			.map(env => path.join(context, env))
-			.forEach(env => {
+			.map((env) => path.join(context, env))
+			.forEach((env) => {
 				if (fs.existsSync(env)) {
 					expand(dotenv.config({path: env}));
 				}
 			});
-	}
+	},
 };
