@@ -162,18 +162,36 @@ function startUnicastingData(client, rinfo, request) {
 	setupSensorSubscription();
 }
 
-function onInput(parameters) {
-	var msg = JSON.stringify({
-		t: 'input',
-		parameters: parameters,
-	});
+function sendToClient(msg) {
+	const data = JSON.stringify(msg);
 	unicastClient.send(
-		msg,
+		data,
 		0,
-		msg.length,
+		data.length,
 		unicastRInfo.port,
 		unicastRInfo.address
 	);
+}
+
+function onInput(parameters) {
+	sendToClient({
+		t: 'input',
+		parameters: parameters,
+	});
+}
+
+function onMouse(parameters) {
+	sendToClient({
+		t: 'mouse',
+		mouse: parameters,
+	});
+}
+
+function onWheel(parameters) {
+	sendToClient({
+		t: 'wheel',
+		wheel: parameters,
+	});
 }
 
 function buildUpdatePayload(data, settings) {
@@ -331,6 +349,24 @@ service.register('start', function (message) {
 service.register('onInput', function (message) {
 	if (unicastDataActive) {
 		onInput(message.payload);
+	}
+	message.respond({
+		//TODO
+	});
+});
+
+service.register('onMouse', function (message) {
+	if (unicastDataActive) {
+		onMouse(message.payload);
+	}
+	message.respond({
+		//TODO
+	});
+});
+
+service.register('onWheel', function (message) {
+	if (unicastDataActive) {
+		onWheel(message.payload);
 	}
 	message.respond({
 		//TODO

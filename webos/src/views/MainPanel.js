@@ -153,6 +153,34 @@ class MainPanel extends React.Component {
 		this.setState({settingsButtonVisible: isVisible});
 	}
 
+	onMouse(e) {
+		console.log(e.type);
+
+		new LS2Request().send({
+			service: 'luna://me.wouterdek.magic4pc.service/',
+			method: 'onMouse',
+			parameters: {
+				type: e.type, // mousedown, mouseup
+				x: e.screenX,
+				y: e.screenY,
+			},
+		});
+	}
+
+	onWheel(e) {
+		console.log('wheel', e.wheelDelta > 0 ? 'up' : 'down');
+
+		new LS2Request().send({
+			service: 'luna://me.wouterdek.magic4pc.service/',
+			method: 'onWheel',
+			parameters: {
+				x: e.screenX,
+				y: e.screenY,
+				delta: e.wheelDelta,
+			},
+		});
+	}
+
 	componentDidMount() {
 		document.addEventListener('keydown', this.onButtonDown, false);
 		document.addEventListener('keyup', this.onButtonUp, false);
@@ -166,6 +194,9 @@ class MainPanel extends React.Component {
 			this.onCursorVisibilityChange,
 			false
 		);
+		document.addEventListener('mousedown', this.onMouse, false);
+		document.addEventListener('mouseup', this.onMouse, false);
+		document.addEventListener('wheel', this.onWheel, false);
 		this.loadSettings();
 
 		new LS2Request().send({
