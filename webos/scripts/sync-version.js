@@ -13,6 +13,6 @@ fs.writeFileSync(
 			version: packageInfo.version,
 		},
 		null,
-		'\t',
-	)}\n`,
+		'\t'
+	)}\n`
 );

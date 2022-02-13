@@ -13,14 +13,14 @@ const App = kind({
 
 	styles: {
 		css,
-		className: 'app'
+		className: 'app',
 	},
 
 	render: (props) => (
 		<Panels {...props}>
-			<MainPanel/>
+			<MainPanel />
 		</Panels>
-	)
+	),
 });
 
 export default ThemeDecorator(App);

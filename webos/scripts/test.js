@@ -9,7 +9,7 @@ const resolve = require('resolve');
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
 	throw err;
 });
 
@@ -36,13 +36,19 @@ function isInMercurialRepository() {
 function resolveJestDefaultEnvironment(name) {
 	const jestDir = path.dirname(resolve.sync('jest', {basedir: __dirname}));
 	const jestCLIDir = path.dirname(resolve.sync('jest-cli', {basedir: jestDir}));
-	const jestConfigDir = path.dirname(resolve.sync('jest-config', {basedir: jestCLIDir}));
+	const jestConfigDir = path.dirname(
+		resolve.sync('jest-config', {basedir: jestCLIDir})
+	);
 	return resolve.sync(name, {basedir: jestConfigDir});
 }
 
 function testEnvironment(args) {
 	const env = (
-		args.reverse().find((curr, i, a) => curr.startsWith('--env=') || a[i + 1] === '--env') || 'jsdom'
+		args
+			.reverse()
+			.find(
+				(curr, i, a) => curr.startsWith('--env=') || a[i + 1] === '--env'
+			) || 'jsdom'
 	).replace(/^--env=/, '');
 	args.reverse();
 	let resolvedEnv;
@@ -82,10 +88,10 @@ function assignOverrides(config) {
 		'testMatch',
 		'transform',
 		'transformIgnorePatterns',
-		'watchPathIgnorePatterns'
+		'watchPathIgnorePatterns',
 	];
 	if (overrides) {
-		supportedKeys.forEach(key => {
+		supportedKeys.forEach((key) => {
 			if (Object.prototype.hasOwnProperty.call(overrides, key)) {
 				if (Array.isArray(config[key]) || typeof config[key] !== 'object') {
 					// for arrays or primitive types, directly override the config key
@@ -99,7 +105,8 @@ function assignOverrides(config) {
 		});
 		const unsupportedKeys = Object.keys(overrides);
 		if (unsupportedKeys.length) {
-			const isOverridingSetupFile = unsupportedKeys.includes('setupFilesAfterEnv');
+			const isOverridingSetupFile =
+				unsupportedKeys.includes('setupFilesAfterEnv');
 
 			if (isOverridingSetupFile) {
 				console.error(
@@ -117,11 +124,15 @@ function assignOverrides(config) {
 					chalk.red(
 						'\nOut of the box, Enact CLI only supports overriding ' +
 							'these Jest options:\n\n' +
-							supportedKeys.map(key => chalk.bold('	\u2022 ' + key)).join('\n') +
+							supportedKeys
+								.map((key) => chalk.bold('	\u2022 ' + key))
+								.join('\n') +
 							'.\n\n' +
 							'These options in your package.json Jest configuration ' +
 							'are not currently supported by Enact CLI:\n\n' +
-							unsupportedKeys.map(key => chalk.bold('	\u2022 ' + key)).join('\n') +
+							unsupportedKeys
+								.map((key) => chalk.bold('	\u2022 ' + key))
+								.join('\n') +
 							'\n\nIf you wish to override other Jest options, you need to ' +
 							'eject from the default setup. You can do so by running ' +
 							chalk.bold('npm run eject') +
@@ -148,7 +159,12 @@ function api(args = []) {
 
 	// Watch unless on CI, in coverage mode, or explicitly running all tests
 	const wIndex = args.indexOf('--watch');
-	if (wIndex > -1 && !process.env.CI && !args.includes('--coverage') && !args.includes('--watchAll')) {
+	if (
+		wIndex > -1 &&
+		!process.env.CI &&
+		!args.includes('--coverage') &&
+		!args.includes('--watchAll')
+	) {
 		// https://github.com/facebook/create-react-app/issues/5210
 		const hasSourceControl = isInGitRepository() || isInMercurialRepository();
 		args[wIndex] = hasSourceControl ? '--watch' : '--watchAll';

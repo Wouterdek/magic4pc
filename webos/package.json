@@ -11,6 +11,7 @@
     "watch": "node ./scripts/pack.js --watch",
     "clean": "node ./scripts/clean.js",
     "lint": "node ./scripts/lint.js .",
+    "format": "prettier --write '**/*.{js,json}'",
     "license": "node ./scripts/license.js",
     "test": "node ./scripts/test.js",
     "package": "ares-package -n dist/ service/",
@@ -51,6 +52,7 @@
     "@enact/webos": "^4.0.0",
     "core-js": "3.6.5",
     "ilib": "npm:ilib-webos@^14.6.2-webos1",
+    "prettier": "^2.5.1",
     "prop-types": "^15.6.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"

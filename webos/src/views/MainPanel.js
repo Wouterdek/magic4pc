@@ -5,13 +5,12 @@ import {Dropdown} from '@enact/sandstone/Dropdown';
 import {SwitchItem} from '@enact/sandstone/SwitchItem';
 import Popup from '@enact/sandstone/Popup';
 import LS2Request from '@enact/webos/LS2Request';
-import React from 'react'
+import React from 'react';
 
 const appId = 'me.wouterdek.magic4pc';
 
 class MainPanel extends React.Component {
-	constructor(props)
-	{
+	constructor(props) {
 		super(props);
 
 		this.startService = this.startService.bind(this);
@@ -31,154 +30,150 @@ class MainPanel extends React.Component {
 		this.onCursorVisibilityChange = this.onCursorVisibilityChange.bind(this);
 
 		this.state = {
-			label: "",
-			videoSource: "ext://hdmi:1",
+			label: '',
+			videoSource: 'ext://hdmi:1',
 			popupOpen: false,
 			settingsButtonVisible: true,
 			autostartEnabled: false,
 		};
 	}
 
-	startService()
-	{
-		console.log("Requesting service start");
+	startService() {
+		console.log('Requesting service start');
 		let onSuccess = (inResponse) => {
-			console.log("Service started");
+			console.log('Service started');
 			this.updateLog();
 			return true;
 		};
 		let onFailure = (inError) => {
-			console.log("Service start failure: "+inError);
-			this.setState({label: "Service start error"});
+			console.log('Service start failure: ' + inError);
+			this.setState({label: 'Service start error'});
 			return;
 		};
 		new LS2Request().send({
-			service: "luna://me.wouterdek.magic4pc.service/",
+			service: 'luna://me.wouterdek.magic4pc.service/',
 			method: 'start',
 			onSuccess: onSuccess,
-			onFailure: onFailure
+			onFailure: onFailure,
 		});
 	}
 
-	onButton(keyCode, isDown)
-	{
+	onButton(keyCode, isDown) {
 		new LS2Request().send({
-			service: "luna://me.wouterdek.magic4pc.service/",
+			service: 'luna://me.wouterdek.magic4pc.service/',
 			method: 'onInput',
 			parameters: {
 				keyCode: keyCode,
-				isDown: isDown
+				isDown: isDown,
 			},
 			onSuccess: (inResponse) => {
 				return true;
 			},
 			onFailure: (inError) => {
 				return;
-			}
+			},
 		});
 	}
 
-	onButtonDown(event)
-	{
-		console.log(event.keyCode + " down");
+	onButtonDown(event) {
+		console.log(event.keyCode + ' down');
 		this.onButton(event.keyCode, true);
 	}
 
-	onButtonUp(event)
-	{
-		console.log(event.keyCode + " up");
+	onButtonUp(event) {
+		console.log(event.keyCode + ' up');
 		this.onButton(event.keyCode, false);
 	}
 
-	stopService()
-	{
-		console.log("Requesting service stop");
+	stopService() {
+		console.log('Requesting service stop');
 		new LS2Request().send({
-			service: "luna://me.wouterdek.magic4pc.service/",
+			service: 'luna://me.wouterdek.magic4pc.service/',
 			method: 'stop',
 			onSuccess: (inResponse) => {
-				console.log("Service stopped");
+				console.log('Service stopped');
 				this.updateLog();
 				return true;
 			},
 			onFailure: (inError) => {
-				console.log("Service stop failure: "+inError);
-				this.setState({label: "Service stop error"});
+				console.log('Service stop failure: ' + inError);
+				this.setState({label: 'Service stop error'});
 				return;
-			}
+			},
 		});
 	}
 
-	queryServiceStatus(onSuccess, onError)
-	{
+	queryServiceStatus(onSuccess, onError) {
 		new LS2Request().send({
-			service: "luna://me.wouterdek.magic4pc.service/",
+			service: 'luna://me.wouterdek.magic4pc.service/',
 			method: 'query',
-			parameters: { },
+			parameters: {},
 			onSuccess: onSuccess,
-			onFailure: onError
+			onFailure: onError,
 		});
 	}
 
-	updateLog()
-	{
-		this.queryServiceStatus((msg) => {
-			console.log(msg);
-			let label = "";
-			if(msg.isConnected)
-			{
-				label = "Connected to "+msg.unicastRInfo.address+":"+msg.unicastRInfo.port;
+	updateLog() {
+		this.queryServiceStatus(
+			(msg) => {
+				console.log(msg);
+				let label = '';
+				if (msg.isConnected) {
+					label =
+						'Connected to ' +
+						msg.unicastRInfo.address +
+						':' +
+						msg.unicastRInfo.port;
+				} else if (msg.broadcastAdsActive) {
+					label = 'Waiting for client to connect';
+				} else if (!msg.serviceActive) {
+					label = 'Service disabled';
+				} else {
+					label = 'Service error';
+				}
+				this.setState({label: label});
+			},
+			(inError) => {
+				console.log('Error retrieving service state: ' + inError);
+				this.setState({label: 'Error retrieving service state'});
 			}
-			else if(msg.broadcastAdsActive)
-			{
-				label = "Waiting for client to connect";
-			}
-			else if(!msg.serviceActive)
-			{
-				label = "Service disabled";
-			}
-			else
-			{
-				label = "Service error";
-			}
-			this.setState({label: label});
-		}, (inError) => {
-			console.log("Error retrieving service state: "+inError);
-			this.setState({label: "Error retrieving service state"});
-		});
+		);
 	}
 
-	onVisibilityChange()
-	{
-		if (document.hidden)
-		{
+	onVisibilityChange() {
+		if (document.hidden) {
 			this.stopService();
-		}
-		else
-		{
+		} else {
 			this.startService();
 		}
 	}
 
-	onCursorVisibilityChange(e)
-	{
+	onCursorVisibilityChange(e) {
 		let isVisible = e.detail.visibility;
 		this.setState({settingsButtonVisible: isVisible});
 	}
 
-	componentDidMount()
-	{
-		document.addEventListener("keydown", this.onButtonDown, false);
-		document.addEventListener("keyup", this.onButtonUp, false);
-		document.addEventListener('visibilitychange', this.onVisibilityChange, false);
-		document.addEventListener('cursorStateChange', this.onCursorVisibilityChange, false);
+	componentDidMount() {
+		document.addEventListener('keydown', this.onButtonDown, false);
+		document.addEventListener('keyup', this.onButtonUp, false);
+		document.addEventListener(
+			'visibilitychange',
+			this.onVisibilityChange,
+			false
+		);
+		document.addEventListener(
+			'cursorStateChange',
+			this.onCursorVisibilityChange,
+			false
+		);
 		this.loadSettings();
 
 		new LS2Request().send({
 			service: 'luna://com.webos.service.eim/',
 			method: 'getAllInputStatus',
 			onSuccess: (resp) => {
-				const autostartEnabled = resp.devices.map(dev => dev.appId).indexOf(appId) !== -1;
+				const autostartEnabled =
+					resp.devices.map((dev) => dev.appId).indexOf(appId) !== -1;
 				this.setState({
 					autostartEnabled,
 				});
@@ -200,7 +195,7 @@ class MainPanel extends React.Component {
 					label: 'Magic4PC',
 				},
 				onSuccess: (resp) => {
-					this.setState({ autostartEnabled: evt.selected });
+					this.setState({autostartEnabled: evt.selected});
 				},
 				onFailure: (err) => {
 					console.warn(err);
@@ -214,7 +209,7 @@ class MainPanel extends React.Component {
 					appId,
 				},
 				onSuccess: (resp) => {
-					this.setState({ autostartEnabled: evt.selected });
+					this.setState({autostartEnabled: evt.selected});
 				},
 				onFailure: (err) => {
 					console.warn(err);
@@ -223,12 +218,19 @@ class MainPanel extends React.Component {
 		}
 	}
 
-	componentWillUnmount()
-	{
-		document.removeEventListener("keydown", this.onButtonPress, false);
-		document.removeEventListener("keyup", this.onButtonPress, false);
-		document.removeEventListener('visibilitychange', this.onVisibilityChange, false);
-		document.removeEventListener('cursorStateChange', this.onCursorVisibilityChange, false);
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.onButtonPress, false);
+		document.removeEventListener('keyup', this.onButtonPress, false);
+		document.removeEventListener(
+			'visibilitychange',
+			this.onVisibilityChange,
+			false
+		);
+		document.removeEventListener(
+			'cursorStateChange',
+			this.onCursorVisibilityChange,
+			false
+		);
 	}
 
 	inputSourceLabels = [
@@ -239,7 +241,7 @@ class MainPanel extends React.Component {
 		'Comp 1',
 		'AV 1',
 		'AV 2',
-	]
+	];
 
 	inputSources = [
 		'ext://hdmi:1',
@@ -248,21 +250,23 @@ class MainPanel extends React.Component {
 		'ext://hdmi:4',
 		'ext://comp:1',
 		'ext://av:1',
-		'ext://av:2'
-	]
+		'ext://av:2',
+	];
 
-	onInputSourceSelected({selected})
-	{
+	onInputSourceSelected({selected}) {
 		let selectedSource = this.inputSources[selected];
 		console.info('Switching sources to:', selectedSource, selected);
-		this.setState({
-			videoSource: selectedSource
-		}, () => {
-			this.saveSettings();
-		});
+		this.setState(
+			{
+				videoSource: selectedSource,
+			},
+			() => {
+				this.saveSettings();
+			}
+		);
 
-		let vidElem = document.getElementById("vidElem");
-		let vidSrcElem = document.getElementById("vidSrcElem");
+		let vidElem = document.getElementById('vidElem');
+		let vidSrcElem = document.getElementById('vidSrcElem');
 
 		vidElem.pause();
 		vidSrcElem.src = selectedSource;
@@ -270,15 +274,13 @@ class MainPanel extends React.Component {
 		vidElem.play();
 	}
 
-	saveSettings()
-	{
+	saveSettings() {
 		window.localStorage.magic4pcSettings = JSON.stringify({
 			videoSource: this.state.videoSource,
 		});
 	}
 
-	loadSettings()
-	{
+	loadSettings() {
 		let savedSettings;
 		try {
 			savedSettings = JSON.parse(window.localStorage.magic4pcSettings);
@@ -292,7 +294,9 @@ class MainPanel extends React.Component {
 		};
 		console.info('Settings:', settings);
 
-		this.onInputSourceSelected({ selected: this.inputSources.indexOf(settings.videoSource) });
+		this.onInputSourceSelected({
+			selected: this.inputSources.indexOf(settings.videoSource),
+		});
 	}
 
 	overlayStyle = {
@@ -303,45 +307,66 @@ class MainPanel extends React.Component {
 		left: 0,
 		right: 0,
 		bottom: 0,
-		zIndex: 2
-	}
+		zIndex: 2,
+	};
 
-	handleOpenPopup()
-	{
+	handleOpenPopup() {
 		this.setState({popupOpen: true});
 		this.updateLogTask = setInterval(() => this.updateLog(), 1000);
 	}
 
-	handleClosePopup()
-	{
+	handleClosePopup() {
 		this.setState({popupOpen: false});
 		clearInterval(this.updateLogTask);
 	}
 
-	render () {
-	  return(
-		<div>
-		  	<video id="vidElem" autoPlay>
-				<source id="vidSrcElem" type="service/webos-external" src={this.state.videoSource}/>
-			</video>
-			<div style={this.overlayStyle}>
-				{this.state.settingsButtonVisible ? <Button onClick={this.handleOpenPopup} icon="gear"/> : null}
-				<Popup open={this.state.popupOpen} onClose={this.handleClosePopup}>
-					<div>
-						<p id="status">{this.state.label}</p>
-					</div>
-					<div>
-						<Dropdown defaultSelected={this.inputSources.indexOf(this.state.videoSource)} title="Input source" onSelect={this.onInputSourceSelected}>{this.inputSourceLabels}</Dropdown>
-						<Button onClick={this.startService} size="small">Enable</Button>
-						<Button onClick={this.stopService} size="small">Disable</Button>
-						<div style={{ width: '12em', display: 'inline-block' }}>
-							<SwitchItem selected={this.state.autostartEnabled} onToggle={this.autostartToggle}>Autostart</SwitchItem>
+	render() {
+		return (
+			<div>
+				<video id="vidElem" autoPlay>
+					<source
+						id="vidSrcElem"
+						type="service/webos-external"
+						src={this.state.videoSource}
+					/>
+				</video>
+				<div style={this.overlayStyle}>
+					{this.state.settingsButtonVisible ? (
+						<Button onClick={this.handleOpenPopup} icon="gear" />
+					) : null}
+					<Popup open={this.state.popupOpen} onClose={this.handleClosePopup}>
+						<div>
+							<p id="status">{this.state.label}</p>
 						</div>
-					</div>
-				</Popup>
+						<div>
+							<Dropdown
+								defaultSelected={this.inputSources.indexOf(
+									this.state.videoSource
+								)}
+								title="Input source"
+								onSelect={this.onInputSourceSelected}
+							>
+								{this.inputSourceLabels}
+							</Dropdown>
+							<Button onClick={this.startService} size="small">
+								Enable
+							</Button>
+							<Button onClick={this.stopService} size="small">
+								Disable
+							</Button>
+							<div style={{width: '12em', display: 'inline-block'}}>
+								<SwitchItem
+									selected={this.state.autostartEnabled}
+									onToggle={this.autostartToggle}
+								>
+									Autostart
+								</SwitchItem>
+							</div>
+						</div>
+					</Popup>
+				</div>
 			</div>
-		</div>
-	  )
+		);
 	}
 }
 

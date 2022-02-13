@@ -21,7 +21,7 @@ const {
 	cssModuleIdent: getSimpleCSSModuleLocalIdent,
 	GracefulFsPlugin,
 	ILibPlugin,
-	WebOSMetaPlugin
+	WebOSMetaPlugin,
 } = require('@enact/dev-utils');
 
 // This is the production and development configuration.
@@ -55,16 +55,23 @@ module.exports = function (env) {
 	process.env.NODE_ENV = env || process.env.NODE_ENV;
 	const isEnvProduction = process.env.NODE_ENV === 'production';
 
-	const publicPath = getPublicUrlOrPath(!isEnvProduction, app.publicUrl, process.env.PUBLIC_URL).replace(/^\/$/, '');
+	const publicPath = getPublicUrlOrPath(
+		!isEnvProduction,
+		app.publicUrl,
+		process.env.PUBLIC_URL
+	).replace(/^\/$/, '');
 
 	// Source maps are resource heavy and can cause out of memory issue for large source files.
 	// By default, sourcemaps will be used in development, however it can universally forced
 	// on or off by setting the GENERATE_SOURCEMAP environment variable.
-	const GENERATE_SOURCEMAP = process.env.GENERATE_SOURCEMAP || (isEnvProduction ? 'false' : 'true');
+	const GENERATE_SOURCEMAP =
+		process.env.GENERATE_SOURCEMAP || (isEnvProduction ? 'false' : 'true');
 	const shouldUseSourceMap = GENERATE_SOURCEMAP !== 'false';
 
 	const getLocalIdent =
-		process.env.SIMPLE_CSS_IDENT !== 'false' ? getSimpleCSSModuleLocalIdent : getCSSModuleLocalIdent;
+		process.env.SIMPLE_CSS_IDENT !== 'false'
+			? getSimpleCSSModuleLocalIdent
+			: getCSSModuleLocalIdent;
 
 	// common function to get style loaders
 	const getStyleLoaders = (cssLoaderOptions = {}, preProcessor) => {
@@ -79,7 +86,9 @@ module.exports = function (env) {
 		// When INLINE_STYLES env var is set, instead of MiniCssExtractPlugin, uses
 		// `style` loader to dynamically inline CSS in style tags at runtime.
 		const loaders = [
-			process.env.INLINE_STYLES ? require.resolve('style-loader') : MiniCssExtractPlugin.loader,
+			process.env.INLINE_STYLES
+				? require.resolve('style-loader')
+				: MiniCssExtractPlugin.loader,
 			{
 				loader: require.resolve('css-loader'),
 				options: Object.assign(
@@ -87,16 +96,16 @@ module.exports = function (env) {
 					cssLoaderOptions,
 					cssLoaderOptions.modules && {modules: {getLocalIdent}},
 					{
-						url: url => {
+						url: (url) => {
 							// Don't handle absolute path urls
 							if (url.startsWith('/')) {
 								return false;
 							}
 
 							return true;
-						}
+						},
 					}
-				)
+				),
 			},
 			{
 				// Options for PostCSS as we reference these options twice
@@ -117,21 +126,22 @@ module.exports = function (env) {
 							require('postcss-preset-env')({
 								autoprefixer: {
 									flexbox: 'no-2009',
-									remove: false
+									remove: false,
 								},
 								stage: 3,
-								features: {'custom-properties': false}
+								features: {'custom-properties': false},
 							}),
 							// Adds PostCSS Normalize to standardize browser quirks based on
 							// the browserslist targets.
 							require('postcss-normalize')(),
 							// Resolution indepedence support
-							app.ri !== false && require('postcss-resolution-independence')(app.ri)
-						].filter(Boolean)
+							app.ri !== false &&
+								require('postcss-resolution-independence')(app.ri),
+						].filter(Boolean),
 					},
-					sourceMap: shouldUseSourceMap
-				}
-			}
+					sourceMap: shouldUseSourceMap,
+				},
+			},
 		];
 		if (preProcessor) {
 			loaders.push(preProcessor);
@@ -139,15 +149,15 @@ module.exports = function (env) {
 		return loaders;
 	};
 
-	const getLessStyleLoaders = cssLoaderOptions =>
+	const getLessStyleLoaders = (cssLoaderOptions) =>
 		getStyleLoaders(cssLoaderOptions, {
 			loader: require.resolve('less-loader'),
 			options: {
 				lessOptions: {
-					modifyVars: Object.assign({__DEV__: !isEnvProduction}, app.accent)
+					modifyVars: Object.assign({__DEV__: !isEnvProduction}, app.accent),
 				},
-				sourceMap: shouldUseSourceMap
-			}
+				sourceMap: shouldUseSourceMap,
+			},
 		});
 
 	return {
@@ -155,15 +165,17 @@ module.exports = function (env) {
 		// Don't attempt to continue if there are any errors.
 		bail: true,
 		// Use source maps during development builds or when specified by GENERATE_SOURCEMAP
-		devtool: shouldUseSourceMap && (isEnvProduction ? 'source-map' : 'cheap-module-source-map'),
+		devtool:
+			shouldUseSourceMap &&
+			(isEnvProduction ? 'source-map' : 'cheap-module-source-map'),
 		// These are the "entry points" to our application.
 		entry: {
 			main: [
 				// Include any polyfills needed for the target browsers.
 				require.resolve('./polyfills'),
 				// This is your app's code
-				app.context
-			]
+				app.context,
+			],
 		},
 		output: {
 			// The build output directory.
@@ -178,7 +190,7 @@ module.exports = function (env) {
 			pathinfo: !isEnvProduction,
 			publicPath,
 			// Improved sourcemap path name mapping for system filepaths
-			devtoolModuleFilenameTemplate: info => {
+			devtoolModuleFilenameTemplate: (info) => {
 				let file = isEnvProduction
 					? path.relative(app.context, info.absoluteResourcePath)
 					: path.resolve(info.absoluteResourcePath);
@@ -199,12 +211,12 @@ module.exports = function (env) {
 			// Prevent potential conflicts in muliple runtimes
 			jsonpFunction: 'webpackJsonp' + app.name,
 			// Allow versatile 'global' mapping across multiple deploy formats
-			globalObject: 'this'
+			globalObject: 'this',
 		},
 		resolve: {
 			// These are the reasonable defaults supported by the React/ES6 ecosystem.
 			extensions: ['.js', '.mjs', '.jsx', '.ts', '.tsx', '.json'].filter(
-				ext => useTypeScript || !ext.includes('ts')
+				(ext) => useTypeScript || !ext.includes('ts')
 			),
 			// Allows us to specify paths to check for module resolving.
 			modules: [path.resolve('./node_modules'), 'node_modules'],
@@ -212,9 +224,11 @@ module.exports = function (env) {
 			symlinks: false,
 			// Backward compatibility for apps using new ilib references with old Enact
 			// and old apps referencing old iLib location with new Enact
-			alias: fs.existsSync(path.join(app.context, 'node_modules', '@enact', 'i18n', 'ilib'))
+			alias: fs.existsSync(
+				path.join(app.context, 'node_modules', '@enact', 'i18n', 'ilib')
+			)
 				? Object.assign({ilib: '@enact/i18n/ilib'}, app.alias)
-				: Object.assign({'@enact/i18n/ilib': 'ilib'}, app.alias)
+				: Object.assign({'@enact/i18n/ilib': 'ilib'}, app.alias),
 		},
 		module: {
 			rules: [
@@ -236,8 +250,8 @@ module.exports = function (env) {
 								// directory for faster rebuilds.
 								cacheDirectory: !isEnvProduction,
 								cacheCompression: false,
-								compact: isEnvProduction
-							}
+								compact: isEnvProduction,
+							},
 						},
 						// Style-based rules support both LESS and CSS format, with *.module.* extension format
 						// to designate CSS modular support.
@@ -245,7 +259,7 @@ module.exports = function (env) {
 						// options used at each level of processing.
 						{
 							test: /\.module\.css$/,
-							use: getStyleLoaders({modules: true})
+							use: getStyleLoaders({modules: true}),
 						},
 						{
 							test: /\.css$/,
@@ -256,16 +270,16 @@ module.exports = function (env) {
 							// containing package claims to have no side effects.
 							// Remove this when webpack adds a warning or an error for this.
 							// See https://github.com/webpack/webpack/issues/6571
-							sideEffects: true
+							sideEffects: true,
 						},
 						{
 							test: /\.module\.less$/,
-							use: getLessStyleLoaders({modules: true})
+							use: getLessStyleLoaders({modules: true}),
 						},
 						{
 							test: /\.less$/,
 							use: getLessStyleLoaders({modules: app.forceCSSModules}),
-							sideEffects: true
+							sideEffects: true,
 						},
 						// "file" loader handles on all files not caught by the above loaders.
 						// When you `import` an asset, you get its output filename and the file
@@ -278,16 +292,21 @@ module.exports = function (env) {
 							// by webpacks internal loaders.
 							// Exclude `ejs` HTML templating language as that's handled by
 							// the HtmlWebpackPlugin.
-							exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.ejs$/, /\.json$/],
+							exclude: [
+								/\.(js|mjs|jsx|ts|tsx)$/,
+								/\.html$/,
+								/\.ejs$/,
+								/\.json$/,
+							],
 							options: {
-								name: '[path][name].[ext]'
-							}
-						}
+								name: '[path][name].[ext]',
+							},
+						},
 						// ** STOP ** Are you adding a new loader?
 						// Make sure to add the new loader(s) before the "file" loader.
-					]
-				}
-			]
+					],
+				},
+			],
 		},
 		// Specific webpack-dev-server options.
 		devServer: {
@@ -305,8 +324,8 @@ module.exports = function (env) {
 			// Reportedly, this avoids CPU overload on some systems.
 			// https://github.com/facebookincubator/create-react-app/issues/293
 			watchOptions: {
-				ignored: /node_modules[\\/](?!@enact[\\/](?!.*node_modules))/
-			}
+				ignored: /node_modules[\\/](?!@enact[\\/](?!.*node_modules))/,
+			},
 		},
 		// Target app to build for a specific environment (default 'web')
 		target: app.environment,
@@ -325,7 +344,7 @@ module.exports = function (env) {
 							// into invalid ecma 5 code. This is why the 'compress' and 'output'
 							// sections only apply transformations that are ecma 5 safe
 							// https://github.com/facebook/create-react-app/pull/4234
-							ecma: 8
+							ecma: 8,
 						},
 						compress: {
 							ecma: 5,
@@ -339,25 +358,25 @@ module.exports = function (env) {
 							// https://github.com/facebook/create-react-app/issues/5250
 							// Pending futher investigation:
 							// https://github.com/terser-js/terser/issues/120
-							inline: 2
+							inline: 2,
 						},
 						mangle: {
-							safari10: true
+							safari10: true,
 						},
 						output: {
 							ecma: 5,
 							comments: false,
 							// Turned on because emoji and regex is not minified properly using default
 							// https://github.com/facebook/create-react-app/issues/2488
-							ascii_only: true
-						}
+							ascii_only: true,
+						},
 					},
 					// Use multi-process parallel running to improve the build speed
 					// Default number of concurrent runs: os.cpus().length - 1
 					parallel: true,
 					// Enable file caching
 					cache: true,
-					sourceMap: shouldUseSourceMap
+					sourceMap: shouldUseSourceMap,
 				}),
 				new OptimizeCSSAssetsPlugin({
 					cssProcessorOptions: {
@@ -370,14 +389,14 @@ module.exports = function (env) {
 							inline: false,
 							// `annotation: true` appends the sourceMappingURL to the end of
 							// the css file, helping the browser find the sourcemap
-							annotation: true
-						}
+							annotation: true,
+						},
 					},
 					cssProcessorPluginOptions: {
-						preset: ['default', {minifyFontValues: {removeQuotes: false}}]
-					}
-				})
-			]
+						preset: ['default', {minifyFontValues: {removeQuotes: false}}],
+					},
+				}),
+			],
 		},
 		plugins: [
 			// Generates an `index.html` file with the js and css tags injected.
@@ -398,24 +417,30 @@ module.exports = function (env) {
 					keepClosingSlash: true,
 					minifyJS: true,
 					minifyCSS: true,
-					minifyURLs: true
-				}
+					minifyURLs: true,
+				},
 			}),
 			// Make NODE_ENV environment variable available to the JS code, for example:
 			// if (process.env.NODE_ENV === 'production') { ... }.
 			// It is absolutely essential that NODE_ENV was set to production here.
 			// Otherwise React will be compiled in the very slow development mode.
 			new DefinePlugin({
-				'process.env.NODE_ENV': JSON.stringify(isEnvProduction ? 'production' : 'development'),
-				'process.env.PUBLIC_URL': JSON.stringify(publicPath)
+				'process.env.NODE_ENV': JSON.stringify(
+					isEnvProduction ? 'production' : 'development'
+				),
+				'process.env.PUBLIC_URL': JSON.stringify(publicPath),
 			}),
 			// Inject prefixed environment variables within code, when used
-			new EnvironmentPlugin(Object.keys(process.env).filter(key => /^(REACT_APP|WDS_SOCKET)/.test(key))),
+			new EnvironmentPlugin(
+				Object.keys(process.env).filter((key) =>
+					/^(REACT_APP|WDS_SOCKET)/.test(key)
+				)
+			),
 			// Note: this won't work without MiniCssExtractPlugin.loader in `loaders`.
 			!process.env.INLINE_STYLES &&
 				new MiniCssExtractPlugin({
 					filename: '[name].css',
-					chunkFilename: 'chunk.[name].css'
+					chunkFilename: 'chunk.[name].css',
 				}),
 			// Provide meaningful information when modules are not found
 			new ModuleNotFoundPlugin(app.context),
@@ -441,7 +466,7 @@ module.exports = function (env) {
 			useTypeScript &&
 				new ForkTsCheckerWebpackPlugin({
 					typescript: resolve.sync('typescript', {
-						basedir: 'node_modules'
+						basedir: 'node_modules',
 					}),
 					async: !isEnvProduction,
 					checkSyntacticErrors: true,
@@ -452,11 +477,13 @@ module.exports = function (env) {
 						'!**/src/**/__tests__/**',
 						'!**/src/**/?(*.)+(spec|test).*',
 						'!**/src/setupProxy.*',
-						'!**/src/setupTests.*'
+						'!**/src/setupTests.*',
 					],
 					silent: true,
 					// The formatter is invoked directly in WebpackDevServerUtils during development
-					formatter: !process.env.DISABLE_TSFORMATTER ? typescriptFormatter : undefined
+					formatter: !process.env.DISABLE_TSFORMATTER
+						? typescriptFormatter
+						: undefined,
 				}),
 			new ESLintPlugin({
 				// Plugin options
@@ -465,8 +492,8 @@ module.exports = function (env) {
 				eslintPath: require.resolve('eslint'),
 				// ESLint class options
 				resolvePluginsRelativeTo: __dirname,
-				cache: true
-			})
-		].filter(Boolean)
+				cache: true,
+			}),
+		].filter(Boolean),
 	};
 };

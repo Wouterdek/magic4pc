@@ -5,7 +5,8 @@ const checker = require('license-checker');
 const minimist = require('minimist');
 
 // The following modules reside in `@enact/cli` but end up in production builds of apps
-const pkgPathResolve = m => path.dirname(require.resolve(m + '/package.json'));
+const pkgPathResolve = (m) =>
+	path.dirname(require.resolve(m + '/package.json'));
 const enactCLIProdModules = ['@babel/core', 'core-js'].map(pkgPathResolve);
 
 function displayHelp() {
@@ -32,30 +33,32 @@ function api({modules = []} = {}) {
 	}
 
 	return Promise.all(
-		modules.map(m => {
+		modules.map((m) => {
 			return new Promise((resolve, reject) => {
 				checker.init({start: m}, (err, json) => {
 					if (err) {
-						reject(new Error(`Unable to process licenses for ${m}.\n${err.message}`));
+						reject(
+							new Error(`Unable to process licenses for ${m}.\n${err.message}`)
+						);
 					} else {
 						resolve(json || {});
 					}
 				});
 			});
 		})
-	).then(values => values.reduce((a, b) => Object.assign(a, b)));
+	).then((values) => values.reduce((a, b) => Object.assign(a, b)));
 }
 
 function cli(args) {
 	const opts = minimist(args, {
 		boolean: ['help'],
-		alias: {h: 'help'}
+		alias: {h: 'help'},
 	});
 	if (opts.help) displayHelp();
 
 	api({modules: opts._})
-		.then(licenses => console.log(JSON.stringify(licenses, null, 2)))
-		.catch(err => {
+		.then((licenses) => console.log(JSON.stringify(licenses, null, 2)))
+		.catch((err) => {
 			console.error(chalk.red('ERROR: ') + err.message);
 			process.exit(1);
 		});

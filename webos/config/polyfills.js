@@ -22,5 +22,6 @@ if (!global.skipPolyfills && !global._babelPolyfill) {
 
 	// Restore real [Array].toLocaleString for runtime usage.
 	if (origToLocaleString) Array.prototype.toLocaleString = origToLocaleString;
-	if (origTypedToLocaleString) Int8Array.prototype.toLocaleString = origTypedToLocaleString;
+	if (origTypedToLocaleString)
+		Int8Array.prototype.toLocaleString = origTypedToLocaleString;
 }
