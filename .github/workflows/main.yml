@@ -4,10 +4,11 @@
 name: Build & Test
 
 on:
-  push:
-    branches: [ master, ci ]
   pull_request:
-    branches: [ master, ci ]
+    branches: [ master ]
+  push:
+    paths:
+      - 'webos/**'
 
 jobs:
   webos-build:
