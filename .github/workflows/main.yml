@@ -35,3 +35,9 @@ jobs:
     - run: npm ci
     - run: npm run build-p
     - run: npm run package
+    - name: Archive built webOS app
+      uses: actions/upload-artifact@v3
+      with:
+        name: webos-app
+        path: |
+          webos/*.ipk
