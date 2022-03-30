@@ -4,10 +4,11 @@
 name: Build & Test
 
 on:
-  push:
-    branches: [ master, ci ]
   pull_request:
-    branches: [ master, ci ]
+    branches: [ master ]
+  push:
+    paths:
+      - 'webos/**'
 
 jobs:
   webos-build:
@@ -34,3 +35,9 @@ jobs:
     - run: npm ci
     - run: npm run build-p
     - run: npm run package
+    - name: Archive built webOS app
+      uses: actions/upload-artifact@v3
+      with:
+        name: webos-app
+        path: |
+          webos/*.ipk
